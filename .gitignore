@@ -1,0 +1,15 @@
+# Don't check auto-generated stuff into git
+coverage
+build
+node_modules
+stats.json
+
+# Cruft
+.DS_Store
+npm-debug.log
+.idea
+server/public/videos/*
+!server/public/videos/.gitkeep
+server/public/images/*
+!server/public/images/.gitkeep
+.env
