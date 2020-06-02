@@ -2,8 +2,9 @@ const { Router } = require("express");
 const router = Router();
 
 const Post = require("../../models/Post");
+const { requireLogin } = require("../../config/passport");
 
-router.get("/", async (req, res) => {
+router.get("/", requireLogin, async (req, res) => {
   const posts = await Post.find();
   res.json(posts);
 });
@@ -17,7 +18,7 @@ router.post("/", async (req, res) => {
     const savedPost = await post.save();
     res.json(savedPost);
   } catch (err) {
-    res.status(400).json(err);
+    res.json({ message: err });
   }
 });
 
@@ -26,7 +27,7 @@ router.get("/:postId", async (req, res) => {
     const post = await Post.findById(req.params.postId);
     res.json(post);
   } catch (err) {
-    res.status(400).json({ message: err });
+    res.json({ message: err });
   }
 });
 
