@@ -22,6 +22,6 @@ app.use(cors({ origin }));
 app.post("/register", registerUser);
 app.post("/login", loginUser);
 app.use("/posts", postsRoute);
-app.get("/health", (req, res) => res.json({ status: "ok" }));
+app.get("/health", (req, res) => res.json({ status: "health ok" }));
 
 app.listen(process.env.PORT);
