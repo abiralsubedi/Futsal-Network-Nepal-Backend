@@ -24,4 +24,4 @@ app.post("/login", loginUser);
 app.use("/posts", postsRoute);
 app.get("/health", (req, res) => res.json({ status: "ok" }));
 
-app.listen(5000);
+app.listen(process.env.PORT);
