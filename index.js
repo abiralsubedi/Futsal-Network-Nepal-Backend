@@ -12,11 +12,11 @@ connect();
 const postsRoute = require("./routes/Posts/posts");
 const registerUser = require("./routes/Users/registerUser");
 const loginUser = require("./routes/Users/loginUser");
-const { origin } = require("./config/OriginCORS");
+const { corsOptionsDelegate } = require("./config/OriginCORS");
 
 //middleware
 app.use(bodyParser.json());
-app.use(cors({ origin }));
+app.use(cors(corsOptionsDelegate));
 
 // routes
 app.post("/register", registerUser);
