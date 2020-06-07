@@ -1,12 +1,12 @@
 const User = require("../../models/User");
-const {
-  genPassword,
-  issueJWT,
-  validPassword
-} = require("../../utils/passwordCrypt");
+const { issueJWT, validPassword } = require("../../utils/passwordCrypt");
 
 module.exports = async (req, res) => {
   try {
+    if (!req.body.username || !req.body.password) {
+      throw new Error("Username and password are required.");
+    }
+
     const user = await User.findOne({ username: req.body.username });
     if (!user) {
       throw new Error("Incorrect");
@@ -23,9 +23,7 @@ module.exports = async (req, res) => {
       token: tokenObject.token,
       expires: tokenObject.expiresIn
     });
-  } catch (err) {
-    res
-      .status(401)
-      .json({ success: false, msg: "Incorrect username or password" });
+  } catch (error) {
+    res.status(409).json({ message: error.message });
   }
 };

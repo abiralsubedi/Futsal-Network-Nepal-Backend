@@ -12,6 +12,10 @@ var UserSchema = mongoose.Schema({
   salt: {
     type: String,
     default: ""
+  },
+  googleId: {
+    type: String,
+    default: ""
   }
 });
 

@@ -17,8 +17,8 @@ router.post("/", async (req, res) => {
     });
     const savedPost = await post.save();
     res.json(savedPost);
-  } catch (err) {
-    res.json({ message: err });
+  } catch (error) {
+    res.status(409).json({ message: error.message });
   }
 });
 
@@ -26,8 +26,8 @@ router.get("/:postId", async (req, res) => {
   try {
     const post = await Post.findById(req.params.postId);
     res.json(post);
-  } catch (err) {
-    res.json({ message: err });
+  } catch (error) {
+    res.status(409).json({ message: error.message });
   }
 });
 
@@ -35,8 +35,8 @@ router.delete("/:postId", async (req, res) => {
   try {
     const removedPost = await Post.remove({ _id: req.params.postId });
     res.json(removedPost);
-  } catch (err) {
-    res.json({ message: err });
+  } catch (error) {
+    res.status(409).json({ message: error.message });
   }
 });
 
@@ -47,8 +47,8 @@ router.patch("/:postId", async (req, res) => {
       { $set: { title: req.body.title } }
     );
     res.json(updatedPost);
-  } catch (err) {
-    res.json({ message: err });
+  } catch (error) {
+    res.status(409).json({ message: error.message });
   }
 });
 
