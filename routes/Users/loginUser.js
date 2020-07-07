@@ -3,17 +3,20 @@ const { issueJWT, validPassword } = require("../../utils/passwordCrypt");
 
 module.exports = async (req, res) => {
   try {
-    if (!req.body.username || !req.body.password) {
+    const { username, password } = req.body;
+    if (!username || !password) {
       throw new Error("Username and password are required.");
     }
 
-    const user = await User.findOne({ username: req.body.username });
+    const user =
+      (await User.findOne({ username: username })) ||
+      (await User.findOne({ emailAddress: username }));
     if (!user) {
-      throw new Error("Incorrect");
+      throw new Error("Username or password is incorrect");
     }
-    const isValid = validPassword(req.body.password, user.hash, user.salt);
+    const isValid = validPassword(password, user.hash, user.salt);
     if (!isValid) {
-      throw new Error("Incorrect");
+      throw new Error("Username or password is incorrect");
     }
 
     const tokenObject = issueJWT(user);

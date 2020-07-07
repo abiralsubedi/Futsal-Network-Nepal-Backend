@@ -7,7 +7,10 @@ router.get("/failed", (req, res) => {
   res.status(409).json({ message: "Login Failed!" });
 });
 
-router.get("/google", passport.authenticate("google", { scope: ["profile"] }));
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
 
 router.get(
   "/google/callback",

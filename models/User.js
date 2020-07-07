@@ -3,7 +3,13 @@ var mongoose = require("mongoose");
 var UserSchema = mongoose.Schema({
   username: {
     type: String,
-    default: ""
+    required: true,
+    unique: true
+  },
+  emailAddress: {
+    type: String,
+    default: "",
+    unique: true
   },
   hash: {
     type: String,
@@ -14,6 +20,18 @@ var UserSchema = mongoose.Schema({
     default: ""
   },
   googleId: {
+    type: String,
+    default: ""
+  },
+  fullName: {
+    type: String,
+    required: true
+  },
+  photoUri: {
+    type: String,
+    default: ""
+  },
+  location: {
     type: String,
     default: ""
   }

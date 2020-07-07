@@ -14,6 +14,7 @@ const postsRoute = require("./routes/Posts");
 const oauthRoutes = require("./routes/OAuth");
 const registerUser = require("./routes/Users/registerUser");
 const loginUser = require("./routes/Users/loginUser");
+const profileRoutes = require("./routes/Users/profile");
 const { corsOptionsDelegate } = require("./config/OriginCORS");
 
 //middleware
@@ -24,6 +25,7 @@ app.use(cors(corsOptionsDelegate));
 // routes
 app.post("/register", registerUser);
 app.post("/login", loginUser);
+app.use("/profile", profileRoutes);
 app.use("/auth", oauthRoutes);
 app.use("/posts", postsRoute);
 app.get("/health", (req, res) => res.json({ status: "health ok" }));

@@ -1,23 +1,35 @@
 const User = require("../../models/User");
 const { genPassword, issueJWT } = require("../../utils/passwordCrypt");
+const generateRandomString = require("../../utils/generateRandomString");
 
 module.exports = async (req, res) => {
   try {
-    if (!req.body.username || !req.body.password) {
-      throw new Error("Username and password are required.");
+    const { emailAddress, password, fullName, location } = req.body;
+    if (!emailAddress || !password || !fullName || !location) {
+      throw new Error("All fields are mandatory.");
     }
-    const oldUser = await User.findOne({ username: req.body.username });
+
+    if (!/^\w+([\.\+-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailAddress)) {
+      throw new Error("Email is invalid");
+    }
+    const oldUser = await User.findOne({ emailAddress: req.body.emailAddress });
     if (oldUser) {
       throw new Error("User already exists");
     }
     const saltHash = genPassword(req.body.password);
-
     const { salt, hash } = saltHash;
+
+    let [username] = emailAddress.split("@");
+    if (await User.findOne({ username })) {
+      username = username + `-${generateRandomString()}`;
+    }
     const newUser = new User({
-      username: req.body.username,
+      username,
+      emailAddress,
+      fullName,
+      location,
       hash: hash,
-      salt: salt,
-      googleId: ""
+      salt: salt
     });
 
     const savedUser = await newUser.save();

@@ -4,6 +4,8 @@ var ExtractJwt = require("passport-jwt").ExtractJwt;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/User");
 
+const generateRandomString = require("../utils/generateRandomString");
+
 const {
   JWT_SECRET,
   GOOGLE_CLIENT_ID,
@@ -56,22 +58,37 @@ exports.googlePassport = passport.use(
       clientSecret: GOOGLE_CLIENT_SECRET,
       callbackURL: `${GOOGLE_CALLBACK_URL}/auth/google/callback`
     },
-    function(accessToken, refreshToken, profile, done) {
+    async function(accessToken, refreshToken, profile, done) {
       User.findOne({ googleId: profile.id }, function(err, user) {
         if (err) {
           return done(err);
         }
-        if (!err && user !== null) {
+        if (!err && user) {
           return done(null, user);
         } else {
-          user = new User({ username: profile.id });
-          user.googleId = profile.id;
-          user.save((err, user) => {
-            if (err) {
-              return done(err, false);
-            } else {
-              return done(null, user);
+          const { emails, id, displayName, photos } = profile;
+          const emailAddress = emails[0].value;
+
+          let [username] = emailAddress.split("@");
+
+          User.findOne({ username }, function(err, user) {
+            if (user) {
+              username = username + `-${generateRandomString()}`;
             }
+            user = new User({
+              username,
+              emailAddress,
+              googleId: id,
+              fullName: displayName,
+              photoUri: photos[0].value
+            });
+            user.save((err, user) => {
+              if (err) {
+                return done(err, false);
+              } else {
+                return done(null, user);
+              }
+            });
           });
         }
       });
