@@ -8,7 +8,10 @@ const { requireLogin } = require("../../config/passport");
 router.get("/", requireLogin, async (req, res) => {
   try {
     const { _id: userId } = req.user;
-    const user = await User.findOne({ _id: userId }, { hash: 0, salt: 0 });
+    const user = await User.findOne(
+      { _id: userId },
+      { hash: 0, salt: 0, __v: 0 }
+    );
     if (!user) {
       throw new Error("User does not exist");
     }

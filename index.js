@@ -14,8 +14,10 @@ const postsRoute = require("./routes/Posts");
 const oauthRoutes = require("./routes/OAuth");
 const registerUser = require("./routes/Users/registerUser");
 const loginUser = require("./routes/Users/loginUser");
+const changePassword = require("./routes/Users/changePassword");
 const profileRoutes = require("./routes/Users/profile");
 const { corsOptionsDelegate } = require("./config/OriginCORS");
+const { requireLogin } = require("./config/passport");
 
 //middleware
 app.use(bodyParser.json());
@@ -25,6 +27,7 @@ app.use(cors(corsOptionsDelegate));
 // routes
 app.post("/register", registerUser);
 app.post("/login", loginUser);
+app.post("/change-password", requireLogin, changePassword);
 app.use("/profile", profileRoutes);
 app.use("/auth", oauthRoutes);
 app.use("/posts", postsRoute);
