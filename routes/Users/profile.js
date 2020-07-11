@@ -45,4 +45,19 @@ router.put("/", requireLogin, async (req, res) => {
   }
 });
 
+router.put("/picture", requireLogin, async (req, res) => {
+  try {
+    const { _id: userId } = req.user;
+    const { updatedUri } = req.body;
+
+    const updatedUser = await User.updateOne(
+      { _id: userId },
+      { $set: { photoUri: updatedUri } }
+    );
+    res.json(updatedUser);
+  } catch (error) {
+    res.status(401).json({ message: error.message });
+  }
+});
+
 module.exports = router;
