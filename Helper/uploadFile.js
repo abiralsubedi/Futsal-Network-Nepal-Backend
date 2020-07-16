@@ -2,17 +2,11 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 const { S3 } = require("aws-sdk");
-const {
-  ACCESS_KEY_ID,
-  SECRET_ACCESS_KEY,
-  AWS_BUCKET_NAME,
-  SESSION_TOKEN
-} = process.env;
+const { ACCESS_KEY_ID, SECRET_ACCESS_KEY, AWS_BUCKET_NAME } = process.env;
 
 const s3 = new S3({
   accessKeyId: ACCESS_KEY_ID,
-  secretAccessKey: SECRET_ACCESS_KEY,
-  sessionToken: SESSION_TOKEN
+  secretAccessKey: SECRET_ACCESS_KEY
 });
 
 const storage = multer.diskStorage({

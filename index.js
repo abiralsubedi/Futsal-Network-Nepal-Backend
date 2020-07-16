@@ -15,7 +15,8 @@ const oauthRoutes = require("./routes/OAuth");
 const registerUser = require("./routes/Users/registerUser");
 const loginUser = require("./routes/Users/loginUser");
 const changePassword = require("./routes/Users/changePassword");
-const uploadFile = require("./routes/Helper/uploadFile");
+const uploadFile = require("./Helper/uploadFile");
+const sendEmail = require("./Helper/sendEmail");
 const profileRoutes = require("./routes/Users/profile");
 const { corsOptionsDelegate } = require("./config/OriginCORS");
 const { requireLogin } = require("./config/passport");
@@ -28,6 +29,7 @@ app.use(cors(corsOptionsDelegate));
 // routes
 app.post("/register", registerUser);
 app.post("/login", loginUser);
+app.get("/email", sendEmail);
 app.post("/change-password", requireLogin, changePassword);
 app.post("/upload-file", requireLogin, uploadFile);
 app.use("/profile", profileRoutes);
