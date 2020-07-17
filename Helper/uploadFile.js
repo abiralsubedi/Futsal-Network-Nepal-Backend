@@ -11,7 +11,7 @@ const s3 = new S3({
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) =>
-    cb(null, path.join(__dirname, "../../", "public/images")),
+    cb(null, path.join(__dirname, "../", "public/images")),
   filename: (req, file, cb) => {
     const filePath = path.parse(file.originalname.replace(/\s/g, "_"));
     cb(null, `${filePath.name}-${Date.now()}${filePath.ext}`);

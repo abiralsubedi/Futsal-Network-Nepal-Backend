@@ -29,7 +29,7 @@ app.use(cors(corsOptionsDelegate));
 // routes
 app.post("/register", registerUser);
 app.post("/login", loginUser);
-app.get("/email", sendEmail);
+app.post("/email", requireLogin, sendEmail);
 app.post("/change-password", requireLogin, changePassword);
 app.post("/upload-file", requireLogin, uploadFile);
 app.use("/profile", profileRoutes);
