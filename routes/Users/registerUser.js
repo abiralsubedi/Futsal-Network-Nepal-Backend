@@ -1,11 +1,15 @@
 const User = require("../../models/User");
 const { genPassword, issueJWT } = require("../../utils/passwordCrypt");
 const generateRandomString = require("../../utils/generateRandomString");
+const sendEmail = require("../../Helper/sendEmail");
+const singleButtonLink = require("../../templates/singleButtonLink");
+
+const { CLIENT_DOMAIN } = process.env;
 
 module.exports = async (req, res) => {
   try {
-    const { emailAddress, password, fullName, location } = req.body;
-    if (!emailAddress || !password || !fullName || !location) {
+    const { emailAddress, fullName, location } = req.body;
+    if (!emailAddress || !fullName || !location) {
       throw new Error("All fields are mandatory.");
     }
 
@@ -16,8 +20,6 @@ module.exports = async (req, res) => {
     if (oldUser) {
       throw new Error("User already exists");
     }
-    const saltHash = genPassword(req.body.password);
-    const { salt, hash } = saltHash;
 
     let [username] = emailAddress.split("@");
     if (await User.findOne({ username })) {
@@ -27,13 +29,30 @@ module.exports = async (req, res) => {
       username,
       emailAddress,
       fullName,
-      location,
-      hash: hash,
-      salt: salt
+      location
     });
 
     const savedUser = await newUser.save();
     const jwt = issueJWT(savedUser);
+
+    const htmlContent = singleButtonLink({
+      fullName,
+      plainText:
+        "Your account has been successfully created. Click on the button below to set your password.",
+      buttonText: "Set my Password",
+      buttonLink: `${CLIENT_DOMAIN}/set-password?token=${jwt.token}`
+    });
+
+    const response = await sendEmail({
+      htmlContent,
+      subject: "Activate your account",
+      receiver: emailAddress
+    });
+
+    if (response === "error") {
+      throw new Error("Sorry email was not sent");
+    }
+
     res.json({
       success: true,
       user: savedUser,
