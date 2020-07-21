@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
       return res.json({ success: true, message: "Email is sent" });
     }
 
-    const jwt = issueJWT(oldUser);
+    const jwt = issueJWT(oldUser, { setNewPassword: true });
     const { fullName } = oldUser;
 
     const htmlContent = singleButtonLink({

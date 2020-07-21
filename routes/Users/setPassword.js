@@ -1,12 +1,19 @@
 const User = require("../../models/User");
 const { genPassword } = require("../../utils/passwordCrypt");
+const getJWTPayload = require("../../utils/getJWTPayload");
 
 module.exports = async (req, res) => {
   try {
+    const { setNewPassword } = getJWTPayload(req.headers.authorization);
+
     const { newPassword } = req.body;
     const { _id: userId } = req.user;
     if (!newPassword) {
       throw new Error("New password is required.");
+    }
+
+    if (!setNewPassword) {
+      throw new Error("Sorry token is invalid");
     }
 
     const user = await User.findOne({ _id: userId });

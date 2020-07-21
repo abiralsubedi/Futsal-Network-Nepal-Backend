@@ -33,7 +33,7 @@ module.exports = async (req, res) => {
     });
 
     const savedUser = await newUser.save();
-    const jwt = issueJWT(savedUser);
+    const jwt = issueJWT(savedUser, { setNewPassword: true });
 
     const htmlContent = singleButtonLink({
       fullName,
