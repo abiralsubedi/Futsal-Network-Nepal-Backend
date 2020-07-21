@@ -16,6 +16,7 @@ const registerUser = require("./routes/Users/registerUser");
 const loginUser = require("./routes/Users/loginUser");
 const changePassword = require("./routes/Users/changePassword");
 const setPassword = require("./routes/Users/setPassword");
+const forgotPassword = require("./routes/Users/forgotPassword");
 const uploadFile = require("./Helper/uploadFile");
 const profileRoutes = require("./routes/Users/profile");
 const { corsOptionsDelegate } = require("./config/OriginCORS");
@@ -29,6 +30,7 @@ app.use(cors(corsOptionsDelegate));
 // routes
 app.post("/register", registerUser);
 app.post("/login", loginUser);
+app.post("/forgot-password", forgotPassword);
 app.post("/change-password", requireLogin, changePassword);
 app.post("/set-password", requireLogin, setPassword);
 app.post("/upload-file", requireLogin, uploadFile);

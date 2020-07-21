@@ -1,5 +1,5 @@
 const User = require("../../models/User");
-const { validPassword, genPassword } = require("../../utils/passwordCrypt");
+const { genPassword } = require("../../utils/passwordCrypt");
 
 module.exports = async (req, res) => {
   try {

@@ -1,5 +1,5 @@
 const User = require("../../models/User");
-const { genPassword, issueJWT } = require("../../utils/passwordCrypt");
+const { issueJWT } = require("../../utils/passwordCrypt");
 const generateRandomString = require("../../utils/generateRandomString");
 const sendEmail = require("../../Helper/sendEmail");
 const singleButtonLink = require("../../templates/singleButtonLink");
@@ -55,9 +55,7 @@ module.exports = async (req, res) => {
 
     res.json({
       success: true,
-      user: savedUser,
-      token: jwt.token,
-      expiresIn: jwt.expires
+      user: savedUser
     });
   } catch (error) {
     res.status(409).json({ message: error.message });
