@@ -7,16 +7,17 @@ const { CLIENT_DOMAIN } = process.env;
 
 module.exports = async (req, res) => {
   try {
-    const { forgotEmail } = req.body;
-    if (!forgotEmail) {
+    const { newEmail } = req.body;
+    const { _id: userId } = req.user;
+    if (!newEmail) {
       throw new Error("Email address is required.");
     }
 
-    if (!/^\w+([\.\+-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(forgotEmail)) {
+    if (!/^\w+([\.\+-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(newEmail)) {
       throw new Error("Email is invalid");
     }
 
-    const oldUser = await User.findOne({ emailAddress: forgotEmail });
+    const oldUser = await User.findOne({ _id: userId });
     if (!oldUser) {
       return res.json({ success: true, message: "Email is sent" });
     }
@@ -25,20 +26,20 @@ module.exports = async (req, res) => {
       throw new Error("Sorry it is not available for google logged in user.");
     }
 
-    const jwt = issueJWT(oldUser, { setNewPassword: true });
+    const jwt = issueJWT(oldUser, { newEmail });
     const { fullName } = oldUser;
 
     const htmlContent = singleButtonLink({
       fullName,
-      plainText: "Click on the button below to set your password.",
-      buttonText: "Set my Password",
-      buttonLink: `${CLIENT_DOMAIN}/set-password?token=${jwt.token}`
+      plainText: "Click on the button below to confirm new email address.",
+      buttonText: "Confirm",
+      buttonLink: `${CLIENT_DOMAIN}/set-password?confirm_email=true&token=${jwt.token}`
     });
 
     const response = await sendEmail({
       htmlContent,
-      subject: "Reset your Password",
-      receiver: forgotEmail
+      subject: "Change your Email Address",
+      receiver: newEmail
     });
 
     if (response === "error") {

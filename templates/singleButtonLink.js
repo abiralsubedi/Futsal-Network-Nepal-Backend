@@ -47,7 +47,8 @@ module.exports = ({ fullName, plainText, buttonText, buttonLink }) => {
                                                 <table width='100%' cellspacing='0' cellpadding='0' style='border-top: 1px solid#F4F4F4; color:#8D8D8D; font-size: 11px;line-height: 16px; padding: 12px 0'>
                                                    <tbody>
                                                       <tr>
-                                                         <td>We provide you the best serivce on demand 24x7.<br></td>
+                                                         <td>We provide you the best service on demand 24x7.<br></td>
+                                                         <td>The email expires in 24 hours.<br></td>
                                                       </tr>
                                                    </tbody>
                                                 </table>
