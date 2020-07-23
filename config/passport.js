@@ -59,39 +59,43 @@ exports.googlePassport = passport.use(
       callbackURL: `${GOOGLE_CALLBACK_URL}/auth/google/callback`
     },
     async function(accessToken, refreshToken, profile, done) {
-      User.findOne({ googleId: profile.id }, function(err, user) {
-        if (err) {
-          return done(err);
-        }
-        if (!err && user) {
+      try {
+        const { emails, id, displayName, photos } = profile;
+        const emailAddress = emails[0].value;
+
+        const user =
+          (await User.findOne({ googleId: id })) ||
+          (await User.findOne({ emailAddress }));
+
+        if (user) {
           return done(null, user);
-        } else {
-          const { emails, id, displayName, photos } = profile;
-          const emailAddress = emails[0].value;
-
-          let [username] = emailAddress.split("@");
-
-          User.findOne({ username }, function(err, user) {
-            if (user) {
-              username = username + `-${generateRandomString()}`;
-            }
-            user = new User({
-              username,
-              emailAddress,
-              googleId: id,
-              fullName: displayName,
-              photoUri: photos[0].value
-            });
-            user.save((err, user) => {
-              if (err) {
-                return done(err, false);
-              } else {
-                return done(null, user);
-              }
-            });
-          });
         }
-      });
+
+        let [username] = emailAddress.split("@");
+
+        const oldUser = await User.findOne({ username });
+        if (oldUser) {
+          username = username + `-${generateRandomString()}`;
+        }
+
+        const newUser = new User({
+          username,
+          emailAddress,
+          googleId: id,
+          fullName: displayName,
+          photoUri: photos[0].value
+        });
+
+        newUser.save((err, user) => {
+          if (err) {
+            return done(err, false);
+          } else {
+            return done(null, user);
+          }
+        });
+      } catch (error) {
+        return done(err);
+      }
     }
   )
 );

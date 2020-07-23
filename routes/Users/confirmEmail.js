@@ -25,6 +25,11 @@ module.exports = async (req, res) => {
       throw new Error("Sorry it is not available for google logged in user.");
     }
 
+    const otherUser = await User.findOne({ emailAddress: newEmail });
+    if (otherUser) {
+      throw new Error("Sorry the email address is already registered");
+    }
+
     const isValid = validPassword(password, user.hash, user.salt);
     if (!isValid) {
       throw new Error("Password is incorrect");

@@ -21,6 +21,7 @@ const changeEmail = require("./routes/Users/changeEmail");
 const confirmEmail = require("./routes/Users/confirmEmail");
 const uploadFile = require("./Helper/uploadFile");
 const profileRoutes = require("./routes/Users/profile");
+const unLinkEmailRoutes = require("./routes/Users/unLinkEmail");
 const { corsOptionsDelegate } = require("./config/OriginCORS");
 const { requireLogin } = require("./config/passport");
 
@@ -32,14 +33,18 @@ app.use(cors(corsOptionsDelegate));
 // routes
 app.post("/register", registerUser);
 app.post("/login", loginUser);
+
 app.post("/change-password", requireLogin, changePassword);
 app.post("/forgot-password", forgotPassword);
 app.post("/set-password", requireLogin, setPassword);
 app.post("/change-email", requireLogin, changeEmail);
 app.post("/confirm-email", requireLogin, confirmEmail);
+
 app.post("/upload-file", requireLogin, uploadFile);
 app.use("/profile", profileRoutes);
+app.use("/unlink-email", unLinkEmailRoutes);
 app.use("/auth", oauthRoutes);
+
 app.use("/posts", postsRoute);
 app.get("/health", (req, res) => res.json({ status: "health ok" }));
 
