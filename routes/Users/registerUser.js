@@ -1,14 +1,17 @@
 const User = require("../../models/User");
 const { issueJWT } = require("../../utils/passwordCrypt");
 const generateRandomString = require("../../utils/generateRandomString");
+
 const sendEmail = require("../../Helper/sendEmail");
+const validateReCaptcha = require("../../Helper/validateReCaptcha");
+
 const singleButtonLink = require("../../templates/singleButtonLink");
 
 const { CLIENT_DOMAIN } = process.env;
 
 module.exports = async (req, res) => {
   try {
-    const { emailAddress, fullName, location } = req.body;
+    const { emailAddress, fullName, location, reCaptchaValue } = req.body;
     if (!emailAddress || !fullName || !location) {
       throw new Error("All fields are mandatory.");
     }
@@ -19,6 +22,11 @@ module.exports = async (req, res) => {
     const oldUser = await User.findOne({ emailAddress: req.body.emailAddress });
     if (oldUser) {
       throw new Error("User already exists");
+    }
+
+    const result = await validateReCaptcha({ reCaptchaValue });
+    if (result === "error") {
+      throw new Error("Recaptcha is not invalid");
     }
 
     let [username] = emailAddress.split("@");
