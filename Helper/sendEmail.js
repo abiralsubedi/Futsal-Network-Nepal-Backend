@@ -17,8 +17,8 @@ module.exports = async ({ subject, receiver, htmlContent }) => {
     });
 
     const message = {
-      from: "abiral0999@gmail.com",
-      replyTo: "abiral0999@gmail.com",
+      from: "abiralsubedi119@gmail.com",
+      replyTo: "abiralsubedi119@gmail.com",
       to: receiver,
       subject: subject,
       html: htmlContent
