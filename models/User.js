@@ -34,6 +34,10 @@ var UserSchema = mongoose.Schema({
   location: {
     type: String,
     default: ""
+  },
+  credit: {
+    type: Number,
+    default: 0
   }
 });
 

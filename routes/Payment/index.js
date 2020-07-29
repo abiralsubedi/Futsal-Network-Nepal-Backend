@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const router = Router();
-const bodyParser = require("body-parser");
 const { requireLogin } = require("../../config/passport");
+const User = require("../../models/User");
 
 const { STRIPE_SECRET_KEY, STRIPE_ENDPOINT_SECRET } = process.env;
 
@@ -9,13 +9,13 @@ const stripe = require("stripe")(STRIPE_SECRET_KEY);
 
 router.post("/create-payment-intent", requireLogin, async (req, res) => {
   try {
-    const { amount, currency } = req.body;
+    const { amount, currency, emailAddress } = req.body;
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
       currency,
       metadata: { integration_check: "accept_a_payment" },
-      receipt_email: "abiralsubedi119@gmail.com"
+      receipt_email: emailAddress
     });
 
     res.json({
@@ -37,8 +37,22 @@ router.post("/webhooks", async (req, res) => {
 
     switch (event.type) {
       case "payment_intent.succeeded": {
-        console.log(event.data.object, "in webhooks");
-        res.json({ message: "success", success: true });
+        const { receipt_email, amount } = event.data.object;
+
+        const emailAddress = receipt_email || "bishal+teacher@innovatetech.co";
+        const receivedAmount = amount / 100;
+
+        await User.updateOne(
+          { emailAddress },
+          { $inc: { credit: receivedAmount } }
+        );
+
+        res.json({
+          message: "success",
+          success: true,
+          receivedAmount,
+          emailAddress
+        });
         break;
       }
 
