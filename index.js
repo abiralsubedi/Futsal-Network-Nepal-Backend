@@ -12,6 +12,7 @@ connect();
 //importing routes
 const postsRoute = require("./routes/Posts");
 const oauthRoutes = require("./routes/OAuth");
+const paymentRoutes = require("./routes/Payment");
 const registerUser = require("./routes/Users/registerUser");
 const loginUser = require("./routes/Users/loginUser");
 const changePassword = require("./routes/Users/changePassword");
@@ -26,7 +27,15 @@ const { corsOptionsDelegate } = require("./config/OriginCORS");
 const { requireLogin } = require("./config/passport");
 
 //middleware
-app.use(bodyParser.json());
+app.use(
+  bodyParser.json({
+    verify: function(req, res, buf) {
+      var url = req.originalUrl;
+      if (url.startsWith("/payment/webhooks")) req.rawBody = buf.toString();
+    }
+  })
+);
+
 app.use(passport.initialize());
 app.use(cors(corsOptionsDelegate));
 
@@ -44,6 +53,7 @@ app.post("/upload-file", requireLogin, uploadFile);
 app.use("/profile", profileRoutes);
 app.use("/unlink-email", unLinkEmailRoutes);
 app.use("/auth", oauthRoutes);
+app.use("/payment", paymentRoutes);
 
 app.use("/posts", postsRoute);
 app.get("/health", (req, res) => res.json({ status: "health ok" }));
