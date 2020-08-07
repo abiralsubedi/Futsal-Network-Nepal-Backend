@@ -65,7 +65,8 @@ router.post("/webhooks", async (req, res) => {
           message: "success",
           success: true,
           receivedAmount,
-          emailAddress
+          emailAddress,
+          newCreditTransaction
         });
         break;
       }
