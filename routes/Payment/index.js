@@ -2,6 +2,7 @@ const { Router } = require("express");
 const router = Router();
 const { requireLogin } = require("../../config/passport");
 const User = require("../../models/User");
+const CreditHistory = require("../../models/CreditHistory");
 
 const { STRIPE_SECRET_KEY, STRIPE_ENDPOINT_SECRET } = process.env;
 
@@ -37,7 +38,7 @@ router.post("/webhooks", async (req, res) => {
 
     switch (event.type) {
       case "payment_intent.succeeded": {
-        const { receipt_email, amount } = event.data.object;
+        const { receipt_email, amount, created } = event.data.object;
 
         const emailAddress = receipt_email || "bishal+teacher@innovatetech.co";
         const receivedAmount = amount / 100;
@@ -46,6 +47,19 @@ router.post("/webhooks", async (req, res) => {
           { emailAddress },
           { $inc: { credit: receivedAmount } }
         );
+
+        const user = await User.findOne({ emailAddress });
+
+        if (user) {
+          const newCreditTransaction = new CreditHistory({
+            userId: user._id,
+            transactionDate: new Date(created * 1000),
+            remark: "Credit top up with Stripe.",
+            amount: receivedAmount
+          });
+
+          await newCreditTransaction.save();
+        }
 
         res.json({
           message: "success",
@@ -60,7 +74,6 @@ router.post("/webhooks", async (req, res) => {
         return res.status(404).json({ message: "Event not found" });
     }
   } catch (error) {
-    console.log(error, "error");
     res.status(409).json({ message: error.message });
   }
 });

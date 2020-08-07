@@ -19,6 +19,7 @@ const changePassword = require("./routes/Users/changePassword");
 const setPassword = require("./routes/Users/setPassword");
 const forgotPassword = require("./routes/Users/forgotPassword");
 const changeEmail = require("./routes/Users/changeEmail");
+const creditHistory = require("./routes/Users/creditHistory");
 const confirmEmail = require("./routes/Users/confirmEmail");
 const uploadFile = require("./Helper/uploadFile");
 const profileRoutes = require("./routes/Users/profile");
@@ -48,6 +49,7 @@ app.post("/forgot-password", forgotPassword);
 app.post("/set-password", requireLogin, setPassword);
 app.post("/change-email", requireLogin, changeEmail);
 app.post("/confirm-email", requireLogin, confirmEmail);
+app.get("/credit-history", requireLogin, creditHistory);
 
 app.post("/upload-file", requireLogin, uploadFile);
 app.use("/profile", profileRoutes);

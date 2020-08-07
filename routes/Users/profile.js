@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 const User = require("../../models/User");
 const { requireLogin } = require("../../config/passport");
 
+const CreditHistory = require("../../models/CreditHistory");
+
 router.get("/", requireLogin, async (req, res) => {
   try {
     const { _id: userId } = req.user;
@@ -15,7 +17,6 @@ router.get("/", requireLogin, async (req, res) => {
     if (!user) {
       throw new Error("User does not exist");
     }
-
     res.json(user);
   } catch (error) {
     res.status(401).json({ message: error.message });
@@ -39,6 +40,7 @@ router.put("/", requireLogin, async (req, res) => {
       { _id: userId },
       { $set: { fullName, username, location } }
     );
+
     res.json(updatedUser);
   } catch (error) {
     res.status(409).json({ message: error.message });
