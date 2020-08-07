@@ -52,7 +52,7 @@ router.post("/webhooks", async (req, res) => {
 
         if (user) {
           const newCreditTransaction = new CreditHistory({
-            userId: user._id,
+            user: user._id,
             transactionDate: new Date(created * 1000),
             remark: "Credit top up with Stripe.",
             amount: receivedAmount
