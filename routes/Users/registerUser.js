@@ -37,7 +37,8 @@ module.exports = async (req, res) => {
       username,
       emailAddress,
       fullName,
-      location
+      location,
+      createdAt: new Date()
     });
 
     const savedUser = await newUser.save();

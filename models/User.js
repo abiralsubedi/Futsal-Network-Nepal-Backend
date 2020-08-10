@@ -38,6 +38,10 @@ var UserSchema = mongoose.Schema({
   credit: {
     type: Number,
     default: 0
+  },
+  createdAt: {
+    type: Date,
+    required: true
   }
 });
 

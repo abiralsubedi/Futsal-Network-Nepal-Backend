@@ -83,7 +83,8 @@ exports.googlePassport = passport.use(
           emailAddress,
           googleId: id,
           fullName: displayName,
-          photoUri: photos[0].value
+          photoUri: photos[0].value,
+          createdAt: new Date()
         });
 
         newUser.save((err, user) => {
