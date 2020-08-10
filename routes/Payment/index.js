@@ -40,25 +40,27 @@ router.post("/webhooks", async (req, res) => {
       case "payment_intent.succeeded": {
         const { receipt_email, amount, created } = event.data.object;
 
-        const emailAddress = receipt_email || "bishal+teacher@innovatetech.co";
+        const emailAddress = receipt_email;
         const receivedAmount = amount / 100;
 
-        await User.updateOne(
-          { emailAddress },
-          { $inc: { credit: receivedAmount } }
-        );
+        if (emailAddress) {
+          await User.updateOne(
+            { emailAddress },
+            { $inc: { credit: receivedAmount } }
+          );
 
-        const user = await User.findOne({ emailAddress });
+          const user = await User.findOne({ emailAddress });
 
-        if (user) {
-          const newCreditTransaction = new CreditHistory({
-            user: user._id,
-            transactionDate: new Date(created * 1000),
-            remark: "Credit top up with Stripe.",
-            amount: receivedAmount
-          });
+          if (user) {
+            const newCreditTransaction = new CreditHistory({
+              user: user._id,
+              transactionDate: new Date(created * 1000),
+              remark: "Credit top up with Stripe.",
+              amount: receivedAmount
+            });
 
-          await newCreditTransaction.save();
+            await newCreditTransaction.save();
+          }
         }
 
         res.json({
