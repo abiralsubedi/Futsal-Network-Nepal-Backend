@@ -2,22 +2,38 @@ const { Router } = require("express");
 const router = Router();
 const mongoose = require("mongoose");
 
-const User = require("../../models/User");
-const { requireLogin } = require("../../config/passport");
+const User = require("../../../models/User");
+const { requireLogin } = require("../../../config/passport");
 
 router.get("/", requireLogin, async (req, res) => {
   try {
     const { _id: userId } = req.user;
-    const user = await User.findOne(
-      { _id: userId },
-      { hash: 0, salt: 0, __v: 0 }
-    );
-    if (!user) {
-      throw new Error("User does not exist");
+    const { searchText } = req.query;
+    const pageSize = +req.query.pageSize;
+    const currentPage = +req.query.currentPage;
+
+    const currentUser = await User.findOne({ _id: userId });
+
+    if (!currentUser || currentUser.role !== "Admin") {
+      throw new Error("You are not authorized");
     }
-    res.json(user);
+
+    const searchRegex = { $regex: searchText, $options: "i" };
+
+    const items = await User.find(
+      { fullName: searchRegex, role: "User" },
+      { hash: 0, salt: 0, __v: 0 }
+    )
+      .collation({ locale: "en" })
+      .sort({ fullName: 1 })
+      .skip(pageSize * currentPage - pageSize)
+      .limit(pageSize);
+
+    const searchCount = await User.count({ fullName: searchRegex });
+
+    res.json({ searchCount, items });
   } catch (error) {
-    res.status(401).json({ message: error.message });
+    res.status(409).json({ message: error.message });
   }
 });
 

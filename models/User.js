@@ -11,6 +11,10 @@ var UserSchema = mongoose.Schema({
     default: "",
     unique: true
   },
+  role: {
+    type: String,
+    default: "User"
+  },
   hash: {
     type: String,
     default: ""
