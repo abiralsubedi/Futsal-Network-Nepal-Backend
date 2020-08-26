@@ -50,6 +50,15 @@ exports.jwtPassport = passport.use(
 //Creating a function to verify logged in user using Passport-Jwt
 exports.requireLogin = passport.authenticate("jwt", { session: false });
 
+// verifies if a user is admin
+exports.verifyAdmin = (req, res, next) => {
+  if (req.user.role === "Admin") {
+    next();
+  } else {
+    res.status(401).json({ message: "You are not authorized." });
+  }
+};
+
 // verifying google user
 exports.googlePassport = passport.use(
   new GoogleStrategy(
