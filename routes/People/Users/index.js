@@ -4,6 +4,7 @@ const { ObjectId } = require("mongoose").Types;
 
 const User = require("../../../models/User");
 const { requireLogin, verifyAdmin } = require("../../../config/passport");
+const { validPassword, genPassword } = require("../../../utils/passwordCrypt");
 
 router.get("/", requireLogin, verifyAdmin, async (req, res) => {
   try {
@@ -40,6 +41,54 @@ router.get("/", requireLogin, verifyAdmin, async (req, res) => {
   }
 });
 
+router.post("/", requireLogin, verifyAdmin, async (req, res) => {
+  try {
+    const {
+      fullName,
+      username,
+      location,
+      emailAddress,
+      credit,
+      photoUri,
+      newPassword
+    } = req.body;
+
+    let otherUser = await User.findOne({
+      username
+    });
+    if (otherUser) {
+      throw new Error("Sorry, the username is already taken.");
+    }
+
+    otherUser = await User.findOne({
+      emailAddress
+    });
+    if (otherUser) {
+      throw new Error("Sorry, the email is already taken.");
+    }
+
+    const saltHash = genPassword(newPassword);
+    const { salt, hash } = saltHash;
+
+    const newUser = new User({
+      fullName,
+      username,
+      location,
+      emailAddress,
+      credit,
+      photoUri,
+      salt,
+      hash,
+      createdAt: new Date()
+    });
+    const savedUser = await newUser.save();
+
+    res.json(savedUser);
+  } catch (error) {
+    res.status(409).json({ message: error.message });
+  }
+});
+
 router.get("/:userId", requireLogin, verifyAdmin, async (req, res) => {
   try {
     const { userId } = req.params;
@@ -67,7 +116,8 @@ router.put("/:userId", requireLogin, verifyAdmin, async (req, res) => {
       location,
       emailAddress,
       credit,
-      photoUri
+      photoUri,
+      newPassword
     } = req.body;
 
     let otherUser = await User.findOne({
@@ -84,6 +134,18 @@ router.put("/:userId", requireLogin, verifyAdmin, async (req, res) => {
     });
     if (otherUser) {
       throw new Error("Sorry, the email is already taken.");
+    }
+
+    const currentUser = await User.findOne({ _id: userId });
+    if (!currentUser) {
+      throw new Error("User does not exist");
+    }
+
+    if (newPassword && !currentUser.googleId) {
+      const saltHash = genPassword(newPassword);
+      const { salt, hash } = saltHash;
+
+      await User.updateOne({ _id: userId }, { $set: { salt, hash } });
     }
 
     const updatedUser = await User.updateOne(
