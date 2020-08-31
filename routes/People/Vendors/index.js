@@ -15,7 +15,7 @@ router.get("/", requireLogin, verifyAdmin, async (req, res) => {
     const searchRegex = { $regex: searchText, $options: "i" };
 
     const items = await User.find(
-      { fullName: searchRegex, role: "User" },
+      { fullName: searchRegex, role: "Vendor" },
       { hash: 0, salt: 0, __v: 0 }
     )
       .collation({ locale: "en" })
@@ -25,7 +25,7 @@ router.get("/", requireLogin, verifyAdmin, async (req, res) => {
 
     const searchCount = await User.countDocuments({
       fullName: searchRegex,
-      role: "User"
+      role: "Vendor"
     });
 
     res.json({ searchCount, items });
@@ -72,6 +72,7 @@ router.post("/", requireLogin, verifyAdmin, async (req, res) => {
       photoUri,
       salt,
       hash,
+      role: "Vendor",
       createdAt: new Date()
     });
     const savedUser = await newUser.save();
@@ -86,7 +87,7 @@ router.get("/:userId", requireLogin, verifyAdmin, async (req, res) => {
   try {
     const { userId } = req.params;
     const currentUser = await User.findOne(
-      { _id: userId, role: "User" },
+      { _id: userId, role: "Vendor" },
       { hash: 0, salt: 0, __v: 0 }
     );
 
