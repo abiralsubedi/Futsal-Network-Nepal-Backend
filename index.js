@@ -19,7 +19,6 @@ const changeEmail = require("./routes/Users/changeEmail");
 const creditHistory = require("./routes/Users/creditHistory");
 const confirmEmail = require("./routes/Users/confirmEmail");
 
-const postsRoute = require("./routes/Posts");
 const oauthRoutes = require("./routes/OAuth");
 const paymentRoutes = require("./routes/Payment");
 const profileRoutes = require("./routes/Users/profile");
@@ -64,7 +63,6 @@ app.use("/payment", paymentRoutes);
 app.use("/people/user", peopleUserRoutes);
 app.use("/people/vendor", peopleVendorRoutes);
 
-app.use("/posts", postsRoute);
 app.get("/health", (req, res) => res.json({ status: "health ok" }));
 
 app.listen(process.env.PORT);

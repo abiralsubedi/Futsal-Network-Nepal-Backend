@@ -43,6 +43,10 @@ var UserSchema = mongoose.Schema({
     type: Number,
     default: 0
   },
+  phone: {
+    type: String,
+    default: ""
+  },
   createdAt: {
     type: Date,
     required: true
