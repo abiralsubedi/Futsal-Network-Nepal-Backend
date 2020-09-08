@@ -3,6 +3,10 @@ const router = Router();
 const { ObjectId } = require("mongoose").Types;
 
 const User = require("../../../models/User");
+const Field = require("../../../models/Field");
+const Day = require("../../../models/Day");
+const Clock = require("../../../models/Clock");
+const WorkingHour = require("../../../models/WorkingHour");
 const { requireLogin, verifyAdmin } = require("../../../config/passport");
 const { genPassword } = require("../../../utils/passwordCrypt");
 
@@ -41,9 +45,13 @@ router.post("/", requireLogin, verifyAdmin, async (req, res) => {
       username,
       location,
       emailAddress,
-      credit,
       photoUri,
-      newPassword
+      newPassword,
+      phone,
+      fields,
+      startPeriod,
+      endPeriod,
+      price
     } = req.body;
 
     let otherUser = await User.findOne({
@@ -60,6 +68,14 @@ router.post("/", requireLogin, verifyAdmin, async (req, res) => {
       throw new Error("Sorry, the email is already taken.");
     }
 
+    if (price <= 0) {
+      throw new Error("Price needs to be greater than 0");
+    }
+
+    if (endPeriod.clockNo < startPeriod.clockNo) {
+      throw new Error("End game can not be earlier than start game");
+    }
+
     const saltHash = genPassword(newPassword);
     const { salt, hash } = saltHash;
 
@@ -68,18 +84,52 @@ router.post("/", requireLogin, verifyAdmin, async (req, res) => {
       username,
       location,
       emailAddress,
-      credit,
       photoUri,
       salt,
       hash,
+      phone,
       role: "Vendor",
       createdAt: new Date()
     });
     const savedUser = await newUser.save();
 
+    const vendorId = savedUser._id;
+
+    const updatedFields = (fields || []).map(field => ({
+      ...field,
+      vendor: vendorId
+    }));
+
+    await Field.insertMany(updatedFields);
+
+    const dayRange = await Day.find({});
+
+    const clockRange = await Clock.find({
+      clockNo: { $gte: startPeriod.clockNo, $lte: endPeriod.clockNo }
+    });
+
+    const vendorHours = [];
+    (dayRange || []).forEach(day => {
+      (clockRange || []).forEach(hour => {
+        vendorHours.push({
+          vendor: vendorId,
+          day: day._id,
+          clock: hour._id,
+          price
+        });
+      });
+    });
+
+    await WorkingHour.insertMany(vendorHours);
+
     res.json(savedUser);
   } catch (error) {
-    res.status(409).json({ message: error.message });
+    const { name, message } = error;
+    if (name === "Error") {
+      res.status(409).json({ message });
+    } else {
+      res.status(409).json({ message: "Field name already exists" });
+    }
   }
 });
 
@@ -109,9 +159,9 @@ router.put("/:userId", requireLogin, verifyAdmin, async (req, res) => {
       username,
       location,
       emailAddress,
-      credit,
       photoUri,
-      newPassword
+      newPassword,
+      phone
     } = req.body;
 
     let otherUser = await User.findOne({
@@ -144,7 +194,16 @@ router.put("/:userId", requireLogin, verifyAdmin, async (req, res) => {
 
     const updatedUser = await User.updateOne(
       { _id: userId },
-      { $set: { fullName, username, location, emailAddress, credit, photoUri } }
+      {
+        $set: {
+          fullName,
+          username,
+          location,
+          emailAddress,
+          photoUri,
+          phone
+        }
+      }
     );
 
     res.json(updatedUser);

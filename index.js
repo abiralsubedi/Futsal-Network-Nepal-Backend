@@ -21,6 +21,7 @@ const confirmEmail = require("./routes/Users/confirmEmail");
 
 const oauthRoutes = require("./routes/OAuth");
 const paymentRoutes = require("./routes/Payment");
+const commonRoutes = require("./routes/Common");
 const profileRoutes = require("./routes/Users/profile");
 const unLinkEmailRoutes = require("./routes/Users/unLinkEmail");
 const peopleUserRoutes = require("./routes/People/Users");
@@ -59,6 +60,7 @@ app.use("/profile", profileRoutes);
 app.use("/unlink-email", unLinkEmailRoutes);
 app.use("/auth", oauthRoutes);
 app.use("/payment", paymentRoutes);
+app.use("/common", commonRoutes);
 
 app.use("/people/user", peopleUserRoutes);
 app.use("/people/vendor", peopleVendorRoutes);
