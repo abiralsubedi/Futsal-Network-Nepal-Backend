@@ -124,12 +124,7 @@ router.post("/", requireLogin, verifyAdmin, async (req, res) => {
 
     res.json(savedUser);
   } catch (error) {
-    const { name, message } = error;
-    if (name === "Error") {
-      res.status(409).json({ message });
-    } else {
-      res.status(409).json({ message: "Field name already exists" });
-    }
+    res.status(409).json({ message: error.message });
   }
 });
 

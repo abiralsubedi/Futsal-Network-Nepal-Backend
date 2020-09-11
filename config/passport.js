@@ -59,6 +59,25 @@ exports.verifyAdmin = (req, res, next) => {
   }
 };
 
+// verifies if a user is vendor
+exports.verifyVendor = (req, res, next) => {
+  if (req.user.role === "Vendor") {
+    next();
+  } else {
+    res.status(401).json({ message: "You are not authorized." });
+  }
+};
+
+// verifies if a user is vendor
+exports.verifyAdminVendor = (req, res, next) => {
+  const { role } = req.user;
+  if (role === "Vendor" || role === "Admin") {
+    next();
+  } else {
+    res.status(401).json({ message: "You are not authorized." });
+  }
+};
+
 // verifying google user
 exports.googlePassport = passport.use(
   new GoogleStrategy(

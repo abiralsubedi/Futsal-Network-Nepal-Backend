@@ -2,8 +2,8 @@ const User = require("../../models/User");
 const { issueJWT } = require("../../utils/passwordCrypt");
 const generateRandomString = require("../../utils/generateRandomString");
 
-const sendEmail = require("../../Helper/sendEmail");
-const validateReCaptcha = require("../../Helper/validateReCaptcha");
+const sendEmail = require("../../Helper/Common/sendEmail");
+const validateReCaptcha = require("../../Helper/Common/validateReCaptcha");
 
 const singleButtonLink = require("../../templates/singleButtonLink");
 

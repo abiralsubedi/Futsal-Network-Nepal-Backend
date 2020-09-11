@@ -5,7 +5,7 @@ const User = require("../../models/User");
 
 const { genPassword, issueJWT } = require("../../utils/passwordCrypt");
 const getJWTPayload = require("../../utils/getJWTPayload");
-const sendEmail = require("../../Helper/sendEmail");
+const sendEmail = require("../../Helper/Common/sendEmail");
 const { requireLogin } = require("../../config/passport");
 
 const singleButtonLink = require("../../templates/singleButtonLink");

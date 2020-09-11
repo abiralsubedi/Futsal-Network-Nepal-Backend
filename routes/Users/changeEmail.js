@@ -1,6 +1,6 @@
 const User = require("../../models/User");
 const { issueJWT } = require("../../utils/passwordCrypt");
-const sendEmail = require("../../Helper/sendEmail");
+const sendEmail = require("../../Helper/Common/sendEmail");
 const singleButtonLink = require("../../templates/singleButtonLink");
 
 const { CLIENT_DOMAIN } = process.env;
