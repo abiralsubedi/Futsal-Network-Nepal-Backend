@@ -88,4 +88,30 @@ router.put(
   }
 );
 
+router.delete(
+  "/:vendorId/working-hour",
+  requireLogin,
+  verifyAdminVendor,
+  async (req, res) => {
+    try {
+      const { gameHours } = req.body;
+
+      const gameHourId = (gameHours || []).map(game => game._id);
+
+      await WorkingHour.deleteMany({
+        _id: { $in: gameHourId }
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      const { name, message } = error;
+      if (name === "Error") {
+        res.status(409).json({ message });
+      } else {
+        res.status(409).json({ message: "Game hour already exists" });
+      }
+    }
+  }
+);
+
 module.exports = router;
