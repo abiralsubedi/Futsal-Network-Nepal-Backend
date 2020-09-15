@@ -9,6 +9,10 @@ var FieldsSchema = mongoose.Schema({
   name: {
     type: String,
     required: true
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 });
 

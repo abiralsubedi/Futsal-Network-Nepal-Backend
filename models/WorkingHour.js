@@ -17,6 +17,10 @@ var WorkingHourSchema = mongoose.Schema({
   price: {
     type: Number,
     required: true
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 });
 
