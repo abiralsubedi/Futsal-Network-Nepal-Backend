@@ -10,6 +10,9 @@ const getField = require("./getField");
 const postField = require("./postField");
 const updateField = require("./updateField");
 
+const getInfo = require("./getInfo");
+const updateDescription = require("./updateDescription");
+
 const { requireLogin, verifyAdminVendor } = require("../../config/passport");
 
 router.get(
@@ -43,5 +46,13 @@ router.delete(
 router.get("/:vendorId/field", requireLogin, verifyAdminVendor, getField);
 router.post("/:vendorId/field", requireLogin, verifyAdminVendor, postField);
 router.put("/:vendorId/field", requireLogin, verifyAdminVendor, updateField);
+
+router.get("/:vendorId/info", requireLogin, verifyAdminVendor, getInfo);
+router.put(
+  "/:vendorId/description",
+  requireLogin,
+  verifyAdminVendor,
+  updateDescription
+);
 
 module.exports = router;

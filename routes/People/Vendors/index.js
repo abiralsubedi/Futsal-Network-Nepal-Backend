@@ -7,6 +7,7 @@ const Field = require("../../../models/Field");
 const Day = require("../../../models/Day");
 const Clock = require("../../../models/Clock");
 const WorkingHour = require("../../../models/WorkingHour");
+const VendorInfo = require("../../../models/VendorInfo");
 const { requireLogin, verifyAdmin } = require("../../../config/passport");
 const { genPassword } = require("../../../utils/passwordCrypt");
 
@@ -121,6 +122,14 @@ router.post("/", requireLogin, verifyAdmin, async (req, res) => {
     });
 
     await WorkingHour.insertMany(vendorHours);
+
+    const newVendorInfo = new VendorInfo({
+      vendor: vendorId,
+      description: "",
+      gallery: []
+    });
+
+    await newVendorInfo.save();
 
     res.json(savedUser);
   } catch (error) {
