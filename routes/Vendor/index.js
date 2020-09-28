@@ -12,6 +12,7 @@ const updateField = require("./updateField");
 
 const getInfo = require("./getInfo");
 const updateDescription = require("./updateDescription");
+const updateGallery = require("./updateGallery");
 
 const { requireLogin, verifyAdminVendor } = require("../../config/passport");
 
@@ -47,12 +48,18 @@ router.get("/:vendorId/field", requireLogin, verifyAdminVendor, getField);
 router.post("/:vendorId/field", requireLogin, verifyAdminVendor, postField);
 router.put("/:vendorId/field", requireLogin, verifyAdminVendor, updateField);
 
-router.get("/:vendorId/info", requireLogin, verifyAdminVendor, getInfo);
+router.get("/:vendorId/info", requireLogin, getInfo);
 router.put(
   "/:vendorId/description",
   requireLogin,
   verifyAdminVendor,
   updateDescription
+);
+router.put(
+  "/:vendorId/gallery",
+  requireLogin,
+  verifyAdminVendor,
+  updateGallery
 );
 
 module.exports = router;
