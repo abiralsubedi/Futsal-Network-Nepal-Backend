@@ -14,6 +14,8 @@ const getInfo = require("./getInfo");
 const updateDescription = require("./updateDescription");
 const updateGallery = require("./updateGallery");
 
+const getReviewDetail = require("./getReviewDetail");
+
 const { requireLogin, verifyAdminVendor } = require("../../config/passport");
 
 router.get(
@@ -61,5 +63,7 @@ router.put(
   verifyAdminVendor,
   updateGallery
 );
+
+router.get("/:vendorId/review-detail", requireLogin, getReviewDetail);
 
 module.exports = router;
