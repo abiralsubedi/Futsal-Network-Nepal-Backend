@@ -15,8 +15,17 @@ const updateDescription = require("./updateDescription");
 const updateGallery = require("./updateGallery");
 
 const getReviewDetail = require("./getReviewDetail");
+const getReview = require("./getReview");
+const postReview = require("./postReview");
+const updateReview = require("./updateReview");
+const deleteReview = require("./deleteReview");
 
-const { requireLogin, verifyAdminVendor } = require("../../config/passport");
+const {
+  requireLogin,
+  verifyAdminVendor,
+  verifyUser,
+  verifyAdminUser
+} = require("../../config/passport");
 
 router.get(
   "/:vendorId/working-hour",
@@ -65,5 +74,9 @@ router.put(
 );
 
 router.get("/:vendorId/review-detail", requireLogin, getReviewDetail);
+router.get("/:vendorId/review", requireLogin, getReview);
+router.post("/:vendorId/review", requireLogin, verifyUser, postReview);
+router.put("/:vendorId/review", requireLogin, verifyUser, updateReview);
+router.delete("/:vendorId/review", requireLogin, verifyAdminUser, deleteReview);
 
 module.exports = router;

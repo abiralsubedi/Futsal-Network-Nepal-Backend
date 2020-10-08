@@ -1,35 +1,31 @@
 const Review = require("../../models/Review");
+const { ObjectId } = require("mongoose").Types;
 
 module.exports = async (req, res) => {
   try {
     const { vendorId } = req.params;
+    const { _id: userId } = req.user;
 
-    const selectedReview = await Review.findOne(
-      {
-        vendor: vendorId
-      },
-      { __v: 0 }
-    );
-
-    const averageRating = await Review.aggregate([
+    let vendorReview = await Review.aggregate([
       {
         $match: {
-          vendor: vendorId
+          vendor: ObjectId(vendorId)
         }
       },
       {
         $group: {
           _id: null,
-          average: { $avg: "$rating" },
+          rating: { $avg: "$rating" },
           totalReview: { $sum: 1 }
         }
       }
     ]);
+    vendorReview = vendorReview[0] || { rating: 0, totalReview: 0 };
 
-    const rateNumber = await Review.aggregate([
+    const ratingList = await Review.aggregate([
       {
         $match: {
-          vendor: vendorId
+          vendor: ObjectId(vendorId)
         }
       },
       {
@@ -40,7 +36,17 @@ module.exports = async (req, res) => {
       }
     ]);
 
-    res.json(selectedReview);
+    const selfReview =
+      (await Review.findOne({ user: userId, vendor: vendorId }, { __v: 0 })) ||
+      {};
+
+    const reviewDetail = {
+      vendorReview,
+      selfReview,
+      ratingList
+    };
+
+    res.json(reviewDetail);
   } catch (error) {
     res.status(409).json({ message: error.message });
   }

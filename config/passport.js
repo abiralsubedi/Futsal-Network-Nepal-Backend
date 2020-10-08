@@ -69,9 +69,38 @@ exports.verifyVendor = (req, res, next) => {
 };
 
 // verifies if a user is vendor
+exports.verifyUser = (req, res, next) => {
+  if (req.user.role === "User") {
+    next();
+  } else {
+    res.status(401).json({ message: "You are not authorized." });
+  }
+};
+
+// verifies if a user is admin or vendor
 exports.verifyAdminVendor = (req, res, next) => {
   const { role } = req.user;
   if (role === "Vendor" || role === "Admin") {
+    next();
+  } else {
+    res.status(401).json({ message: "You are not authorized." });
+  }
+};
+
+// verifies if a user is admin or user
+exports.verifyAdminUser = (req, res, next) => {
+  const { role } = req.user;
+  if (role === "User" || role === "Admin") {
+    next();
+  } else {
+    res.status(401).json({ message: "You are not authorized." });
+  }
+};
+
+// verifies if a user is vendor or user
+exports.verifyUserVendor = (req, res, next) => {
+  const { role } = req.user;
+  if (role === "User" || role === "Vendor") {
     next();
   } else {
     res.status(401).json({ message: "You are not authorized." });
