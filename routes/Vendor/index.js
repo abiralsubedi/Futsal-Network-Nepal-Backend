@@ -1,6 +1,8 @@
 const { Router } = require("express");
 const router = Router();
 
+const searchVendor = require("./searchVendor");
+
 const getWorkingHour = require("./getWorkingHour");
 const postWorkingHour = require("./postWorkingHour");
 const updateWorkingHour = require("./updateWorkingHour");
@@ -26,6 +28,8 @@ const {
   verifyUser,
   verifyAdminUser
 } = require("../../config/passport");
+
+router.get("/search", requireLogin, searchVendor);
 
 router.get(
   "/:vendorId/working-hour",
