@@ -17,6 +17,10 @@ var BookingSchema = mongoose.Schema({
   workingHour: {
     type: ObjectId,
     ref: "WorkingHour"
+  },
+  createdAt: {
+    type: Date,
+    default: new Date()
   }
 });
 

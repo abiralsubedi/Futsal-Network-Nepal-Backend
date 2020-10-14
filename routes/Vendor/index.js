@@ -2,6 +2,10 @@ const { Router } = require("express");
 const router = Router();
 
 const searchVendor = require("./searchVendor");
+const getAvailableField = require("./getAvailableField");
+const getAvailableGame = require("./getAvailableGame");
+
+const bookGame = require("./bookGame");
 
 const getWorkingHour = require("./getWorkingHour");
 const postWorkingHour = require("./postWorkingHour");
@@ -30,6 +34,10 @@ const {
 } = require("../../config/passport");
 
 router.get("/search", requireLogin, searchVendor);
+router.get("/:vendorId/available-field", requireLogin, getAvailableField);
+router.get("/:vendorId/available-game", requireLogin, getAvailableGame);
+
+router.post("/:vendorId/book-game", requireLogin, bookGame);
 
 router.get(
   "/:vendorId/working-hour",
