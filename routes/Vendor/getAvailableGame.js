@@ -22,7 +22,8 @@ module.exports = async (req, res) => {
 
     const currentFieldBooking = await Booking.find({
       field: fieldId,
-      bookingDate: { $eq: reqDate }
+      bookingDate: { $eq: reqDate },
+      cancelled: false
     });
 
     const filteredHours = (selectedHours || []).filter(item => {

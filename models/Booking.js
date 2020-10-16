@@ -6,6 +6,10 @@ var BookingSchema = mongoose.Schema({
     type: ObjectId,
     ref: "User"
   },
+  vendor: {
+    type: ObjectId,
+    ref: "User"
+  },
   bookingDate: {
     type: Date,
     required: true
@@ -21,12 +25,11 @@ var BookingSchema = mongoose.Schema({
   createdAt: {
     type: Date,
     default: new Date()
+  },
+  cancelled: {
+    type: Boolean,
+    default: false
   }
 });
-
-BookingSchema.index(
-  { bookingDate: 1, field: 1, workingHour: 1 },
-  { unique: true }
-);
 
 module.exports = mongoose.model("Booking", BookingSchema);

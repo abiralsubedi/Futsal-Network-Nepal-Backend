@@ -5,17 +5,25 @@ const User = require("../../models/User");
 
 module.exports = async (req, res) => {
   try {
+    const { vendorId } = req.params;
     const { _id: userId } = req.user;
     const { bookingDate, fieldId, gameHourId } = req.body;
 
+    const selectedGame = await WorkingHour.findOne({ _id: gameHourId });
+
+    if (req.user.credit < selectedGame.price) {
+      throw new Error("You do not have enough balance.");
+    }
+
     const newBooking = new Booking({
       user: userId,
+      vendor: vendorId,
       bookingDate: new Date(bookingDate),
       field: fieldId,
       workingHour: gameHourId
     });
 
-    const selectedGame = await WorkingHour.findOne({ _id: gameHourId });
+    await newBooking.save();
 
     let newCredit = req.user.credit - selectedGame.price;
     newCredit = Math.round(newCredit * 100) / 100;
@@ -30,7 +38,6 @@ module.exports = async (req, res) => {
 
     await newCreditTransaction.save();
 
-    await newBooking.save();
     res.json({ amount: -selectedGame.price });
   } catch (error) {
     const { name, message } = error;
