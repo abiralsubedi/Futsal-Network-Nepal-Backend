@@ -11,7 +11,9 @@ module.exports = async (req, res) => {
         day: dayId
       },
       { __v: 0 }
-    ).populate({ path: "clock", options: { sort: { clockNo: 1 } } });
+    )
+      .populate({ path: "clock" })
+      .sort({ clock: 1 });
 
     res.json(selectedHours);
   } catch (error) {

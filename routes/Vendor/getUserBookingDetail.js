@@ -11,21 +11,34 @@ module.exports = async (req, res) => {
       { user: userId, bookingDate: { $gte: startDate, $lt: endDate } },
       { __v: 0 }
     )
-      .sort({ bookingDate: 1 })
       .populate({ path: "vendor", select: "-hash -salt" })
       .populate({
         path: "workingHour",
-        populate: { path: "clock" },
-        options: { sort: { price: 1 } }
+        populate: { path: "clock" }
       })
-      .skip(pageSize * currentPage - pageSize)
-      .limit(pageSize);
+      .sort({ bookingDate: 1 });
+
+    items.sort((a, b) => {
+      if (
+        new Date(a.bookingDate).toDateString() ===
+        new Date(b.bookingDate).toDateString()
+      ) {
+        return a.workingHour.clock.clockNo - b.workingHour.clock.clockNo;
+      }
+      return 0;
+    });
+
+    const updatedItems = items.splice(
+      pageSize * currentPage - pageSize,
+      pageSize
+    );
+
     const searchCount = await Booking.countDocuments({
       user: userId,
       bookingDate: { $gte: startDate, $lt: endDate }
     });
 
-    res.json({ searchCount, items });
+    res.json({ searchCount, items: updatedItems });
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
