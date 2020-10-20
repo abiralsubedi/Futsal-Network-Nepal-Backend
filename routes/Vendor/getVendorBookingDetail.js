@@ -12,6 +12,7 @@ module.exports = async (req, res) => {
       { __v: 0 }
     )
       .populate({ path: "vendor", select: "-hash -salt" })
+      .populate({path: 'user', select: '-hash -salt'})
       .populate({ path: "field", select: "-__v" })
       .populate({
         path: "workingHour",
