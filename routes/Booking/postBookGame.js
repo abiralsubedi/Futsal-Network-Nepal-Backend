@@ -5,9 +5,8 @@ const User = require("../../models/User");
 
 module.exports = async (req, res) => {
   try {
-    const { vendorId } = req.params;
     const { _id: userId } = req.user;
-    const { bookingDate, fieldId, gameHourId } = req.body;
+    const { bookingDate, fieldId, gameHourId, vendorId } = req.body;
 
     const selectedGame = await WorkingHour.findOne({ _id: gameHourId });
 

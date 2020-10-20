@@ -27,6 +27,7 @@ const unLinkEmailRoutes = require("./routes/Users/unLinkEmail");
 const peopleUserRoutes = require("./routes/People/Users");
 const peopleVendorRoutes = require("./routes/People/Vendors");
 const vendorRoutes = require("./routes/Vendor");
+const bookingRoutes = require("./routes/Booking");
 
 const uploadFile = require("./Helper/Common/uploadFile");
 const { corsOptionsDelegate } = require("./config/OriginCORS");
@@ -67,6 +68,7 @@ app.use("/people/user", peopleUserRoutes);
 app.use("/people/vendor", peopleVendorRoutes);
 
 app.use("/vendor", vendorRoutes);
+app.use("/booking", bookingRoutes);
 
 app.get("/health", (req, res) => res.json({ status: "health ok" }));
 

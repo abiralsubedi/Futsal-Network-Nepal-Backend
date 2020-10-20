@@ -1,31 +1,45 @@
 const Booking = require("../../models/Booking");
-const WorkingHour = require("../../models/WorkingHour");
-const CreditHistory = require("../../models/CreditHistory");
-const User = require("../../models/User");
 
 module.exports = async (req, res) => {
   try {
-    const { searchText } = req.query;
+    const { vendorId } = req.params;
+    const { startDate, endDate } = req.query;
     const pageSize = +req.query.pageSize;
     const currentPage = +req.query.currentPage;
 
-    const searchRegex = { $regex: searchText, $options: "i" };
-
-    const items = await User.find(
-      { fullName: searchRegex, role: "User" },
-      { hash: 0, salt: 0, __v: 0 }
+    const items = await Booking.find(
+      { vendor: vendorId, bookingDate: { $gte: startDate, $lt: endDate } },
+      { __v: 0 }
     )
-      .collation({ locale: "en" })
-      .sort({ fullName: 1 })
-      .skip(pageSize * currentPage - pageSize)
-      .limit(pageSize);
+      .populate({ path: "vendor", select: "-hash -salt" })
+      .populate({ path: "field", select: "-__v" })
+      .populate({
+        path: "workingHour",
+        populate: { path: "clock" }
+      })
+      .sort({ bookingDate: 1 });
 
-    const searchCount = await User.countDocuments({
-      fullName: searchRegex,
-      role: "User"
+    items.sort((a, b) => {
+      if (
+        new Date(a.bookingDate).toDateString() ===
+        new Date(b.bookingDate).toDateString()
+      ) {
+        return a.workingHour.clock.clockNo - b.workingHour.clock.clockNo;
+      }
+      return 0;
     });
 
-    res.json({ searchCount, items });
+    const updatedItems = items.splice(
+      pageSize * currentPage - pageSize,
+      pageSize
+    );
+
+    const searchCount = await Booking.countDocuments({
+      vendor: vendorId,
+      bookingDate: { $gte: startDate, $lt: endDate }
+    });
+
+    res.json({ searchCount, items: updatedItems });
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
