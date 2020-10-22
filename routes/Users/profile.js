@@ -24,7 +24,7 @@ router.get("/", requireLogin, async (req, res) => {
 router.put("/", requireLogin, async (req, res) => {
   try {
     const { _id: userId } = req.user;
-    const { fullName, username, location } = req.body;
+    const { fullName, username, location, phone } = req.body;
 
     const otherUser = await User.findOne({
       _id: { $ne: mongoose.Types.ObjectId(userId) },
@@ -36,7 +36,7 @@ router.put("/", requireLogin, async (req, res) => {
 
     const updatedUser = await User.updateOne(
       { _id: userId },
-      { $set: { fullName, username, location } }
+      { $set: { fullName, username, location, phone } }
     );
 
     res.json(updatedUser);

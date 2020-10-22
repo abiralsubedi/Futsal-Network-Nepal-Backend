@@ -1,6 +1,6 @@
-var mongoose = require("mongoose");
+var { Schema, model } = require("mongoose");
 
-var UserSchema = mongoose.Schema({
+var UserSchema = Schema({
   username: {
     type: String,
     required: true,
@@ -36,8 +36,8 @@ var UserSchema = mongoose.Schema({
     default: ""
   },
   location: {
-    type: String,
-    default: ""
+    type: Schema.Types.Mixed,
+    default: { place: "" }
   },
   credit: {
     type: Number,
@@ -49,8 +49,8 @@ var UserSchema = mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    required: true
+    default: new Date()
   }
 });
 
-module.exports = mongoose.model("User", UserSchema);
+module.exports = model("User", UserSchema);

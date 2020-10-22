@@ -11,8 +11,8 @@ const { CLIENT_DOMAIN } = process.env;
 
 module.exports = async (req, res) => {
   try {
-    const { emailAddress, fullName, location, reCaptchaValue } = req.body;
-    if (!emailAddress || !fullName || !location) {
+    const { emailAddress, fullName, phone, reCaptchaValue } = req.body;
+    if (!emailAddress || !fullName || !phone) {
       throw new Error("All fields are mandatory.");
     }
 
@@ -37,8 +37,7 @@ module.exports = async (req, res) => {
       username,
       emailAddress,
       fullName,
-      location,
-      createdAt: new Date()
+      phone
     });
 
     const savedUser = await newUser.save();

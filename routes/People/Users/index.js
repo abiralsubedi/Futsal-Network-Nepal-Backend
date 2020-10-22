@@ -39,7 +39,7 @@ router.post("/", requireLogin, verifyAdmin, async (req, res) => {
     const {
       fullName,
       username,
-      location,
+      phone,
       emailAddress,
       credit,
       photoUri,
@@ -66,7 +66,7 @@ router.post("/", requireLogin, verifyAdmin, async (req, res) => {
     const newUser = new User({
       fullName,
       username,
-      location,
+      phone,
       emailAddress,
       credit,
       photoUri,
@@ -106,7 +106,7 @@ router.put("/:userId", requireLogin, verifyAdmin, async (req, res) => {
     const {
       fullName,
       username,
-      location,
+      phone,
       emailAddress,
       credit,
       photoUri,
@@ -143,7 +143,7 @@ router.put("/:userId", requireLogin, verifyAdmin, async (req, res) => {
 
     const updatedUser = await User.updateOne(
       { _id: userId },
-      { $set: { fullName, username, location, emailAddress, credit, photoUri } }
+      { $set: { fullName, username, phone, emailAddress, credit, photoUri } }
     );
 
     res.json(updatedUser);
