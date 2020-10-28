@@ -6,6 +6,7 @@ const getAvailableField = require("./getAvailableField");
 const getAvailableGame = require("./getAvailableGame");
 
 const getVendorBookingDetail = require("./getVendorBookingDetail");
+const getVendorProfile = require("./getVendorProfile");
 
 const getWorkingHour = require("./getWorkingHour");
 const postWorkingHour = require("./postWorkingHour");
@@ -38,6 +39,7 @@ router.get("/:vendorId/available-field", requireLogin, getAvailableField);
 router.get("/:vendorId/available-game", requireLogin, getAvailableGame);
 
 router.get("/:vendorId/booking", requireLogin, getVendorBookingDetail);
+router.get("/:vendorId/profile", requireLogin, getVendorProfile);
 
 router.get(
   "/:vendorId/working-hour",
