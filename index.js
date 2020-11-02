@@ -9,6 +9,9 @@ const passport = require("passport");
 const app = express();
 connect();
 
+// connect redis
+require("./services/cache");
+
 //importing routes
 const registerUser = require("./routes/Users/registerUser");
 const loginUser = require("./routes/Users/loginUser");

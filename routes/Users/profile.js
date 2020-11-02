@@ -12,6 +12,7 @@ router.get("/", requireLogin, async (req, res) => {
       { _id: userId },
       { hash: 0, salt: 0, __v: 0 }
     );
+
     if (!user) {
       throw new Error("User does not exist");
     }

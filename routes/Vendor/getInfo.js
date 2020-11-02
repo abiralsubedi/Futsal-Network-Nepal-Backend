@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
         vendor: vendorId
       },
       { __v: 0 }
-    );
+    ).cache(`vendor/${vendorId}/info`);
 
     res.json(selectedVendorInfo);
   } catch (error) {
