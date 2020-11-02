@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
     const searchRegex = { $regex: searchText, $options: "i" };
 
     const items = await User.find(
-      { fullName: searchRegex, role: "Vendor" },
+      { role: "Vendor", fullName: searchRegex },
       { hash: 0, salt: 0, __v: 0 }
     )
       .collation({ locale: "en" })

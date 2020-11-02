@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
 
     const updatedReview = await Review.updateOne(
       { _id: reviewId },
-      { $set: { rating, comment } }
+      { $set: { rating, comment, reviewDate: new Date() } }
     );
 
     res.json(updatedReview);

@@ -15,7 +15,7 @@ router.get("/", requireLogin, verifyAdmin, async (req, res) => {
     const searchRegex = { $regex: searchText, $options: "i" };
 
     const items = await User.find(
-      { fullName: searchRegex, role: "User" },
+      { role: "User", fullName: searchRegex },
       { hash: 0, salt: 0, __v: 0 }
     )
       .collation({ locale: "en" })
@@ -24,8 +24,8 @@ router.get("/", requireLogin, verifyAdmin, async (req, res) => {
       .limit(pageSize);
 
     const searchCount = await User.countDocuments({
-      fullName: searchRegex,
-      role: "User"
+      role: "User",
+      fullName: searchRegex
     });
 
     res.json({ searchCount, items });

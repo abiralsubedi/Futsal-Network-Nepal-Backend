@@ -2,6 +2,8 @@ const { Router } = require("express");
 const router = Router();
 
 const searchVendor = require("./searchVendor");
+const getNearbyVendor = require("./getNearbyVendor");
+
 const getAvailableField = require("./getAvailableField");
 const getAvailableGame = require("./getAvailableGame");
 
@@ -35,6 +37,8 @@ const {
 } = require("../../config/passport");
 
 router.get("/search", requireLogin, searchVendor);
+router.get("/nearby", requireLogin, getNearbyVendor);
+
 router.get("/:vendorId/available-field", requireLogin, getAvailableField);
 router.get("/:vendorId/available-game", requireLogin, getAvailableGame);
 
