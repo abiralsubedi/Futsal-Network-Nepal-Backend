@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
     const selectedGame = await WorkingHour.findOne({ _id: gameHourId });
 
     if (req.user.credit < selectedGame.price) {
-      throw new Error("You do not have enough balance.");
+      throw new Error("Oops! Please try again.");
     }
 
     const newBooking = new Booking({

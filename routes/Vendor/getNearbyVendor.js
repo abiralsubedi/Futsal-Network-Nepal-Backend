@@ -4,8 +4,9 @@ module.exports = async (req, res) => {
   try {
     const lat = +req.query.lat;
     const lng = +req.query.lng;
+    const radius = +req.query.radius;
 
-    const boundaryDegree = 0.009009 * 5;
+    const boundaryDegree = 0.009009 * radius;
     const minLat = lat - boundaryDegree;
     const maxLat = lat + boundaryDegree;
 
