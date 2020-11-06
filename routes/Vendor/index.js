@@ -4,6 +4,7 @@ const router = Router();
 const searchVendor = require("./searchVendor");
 const getNearbyVendor = require("./getNearbyVendor");
 const getMostRatedVendor = require("./getMostRatedVendor");
+const getVendorDistance = require("./getVendorDistance");
 
 const getAvailableField = require("./getAvailableField");
 const getAvailableGame = require("./getAvailableGame");
@@ -40,6 +41,7 @@ const {
 router.get("/search", requireLogin, searchVendor);
 router.get("/nearby", requireLogin, getNearbyVendor);
 router.get("/most-rated", requireLogin, getMostRatedVendor);
+router.get("/:vendorId/distance", requireLogin, getVendorDistance);
 
 router.get("/:vendorId/available-field", requireLogin, getAvailableField);
 router.get("/:vendorId/available-game", requireLogin, getAvailableGame);
