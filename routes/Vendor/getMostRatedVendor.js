@@ -28,6 +28,7 @@ module.exports = async (req, res) => {
           as: "vendor"
         }
       },
+      { $unwind: "$vendor" },
       {
         $project: {
           "vendor.hash": 0,

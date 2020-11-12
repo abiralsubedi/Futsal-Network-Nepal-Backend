@@ -10,6 +10,5 @@ module.exports = async (originStr, destinationStr) => {
 
   let result = await axios.get(finalApiURL); // call API
   const distance = result.data.rows[0].elements[0].distance;
-  console.log(JSON.stringify(result.data.rows), "output");
   return distance;
 };

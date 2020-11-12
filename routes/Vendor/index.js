@@ -2,6 +2,7 @@ const { Router } = require("express");
 const router = Router();
 
 const searchVendor = require("./searchVendor");
+const customSearchVendor = require("./customSearchVendor");
 const getNearbyVendor = require("./getNearbyVendor");
 const getMostRatedVendor = require("./getMostRatedVendor");
 const getVendorDistance = require("./getVendorDistance");
@@ -39,6 +40,7 @@ const {
 } = require("../../config/passport");
 
 router.get("/search", requireLogin, searchVendor);
+router.get("/custom-search", requireLogin, customSearchVendor);
 router.get("/nearby", requireLogin, getNearbyVendor);
 router.get("/most-rated", requireLogin, getMostRatedVendor);
 router.get("/:vendorId/distance", requireLogin, getVendorDistance);

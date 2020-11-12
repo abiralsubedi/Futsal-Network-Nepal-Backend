@@ -1,16 +1,16 @@
 var mongoose = require("mongoose");
-const { ObjectId } = mongoose.Schema.Types;
+const { ObjectId, Mixed } = mongoose.Schema.Types;
 
-const GallerySchema = new mongoose.Schema({
-  photoUri: {
-    type: String,
-    required: true
-  },
-  caption: {
-    type: String,
-    default: ""
-  }
-});
+// const GallerySchema = new mongoose.Schema({
+//   photoUri: {
+//     type: String,
+//     required: true
+//   },
+//   caption: {
+//     type: String,
+//     default: ""
+//   }
+// });
 
 var VendorInfoSchema = new mongoose.Schema({
   vendor: {
@@ -22,7 +22,7 @@ var VendorInfoSchema = new mongoose.Schema({
     type: String,
     default: ""
   },
-  gallery: [GallerySchema]
+  gallery: [Mixed]
 });
 
 module.exports = mongoose.model("VendorInfo", VendorInfoSchema);

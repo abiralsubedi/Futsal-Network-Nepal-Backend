@@ -21,7 +21,6 @@ module.exports = async (req, res) => {
 
     res.json({ distance });
   } catch (error) {
-    console.log(error, "er");
     res.status(409).json({ message: error.message });
   }
 };

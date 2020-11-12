@@ -51,7 +51,6 @@ mongoose.Query.prototype.exec = async function() {
 
   // When data is found in redis cache
   if (cacheValue) {
-    console.log("from cache");
     const doc = JSON.parse(cacheValue); // converting back to original datatype from string
 
     /* While storing data in redis we may store a single object or an array of objects.
@@ -65,7 +64,6 @@ mongoose.Query.prototype.exec = async function() {
 
   // Data not present in redis cache, get the data from Mongodb and save the data to redis cache also
   const result = await exec.apply(this, arguments); // using the default exec function
-  console.log("from db");
   // just some logic to check if the data for the required query is even present in the database
   if (result) {
     // mongodb retured non-null value (can be empty array)

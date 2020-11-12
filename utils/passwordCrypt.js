@@ -55,7 +55,7 @@ function issueJWT(user, extraPayload) {
     ...extraPayload
   };
 
-  const expiresIn = "1d";
+  const expiresIn = "7d";
   const signedToken = jsonwebtoken.sign(payload, PRIV_KEY, {
     expiresIn: expiresIn
   });
