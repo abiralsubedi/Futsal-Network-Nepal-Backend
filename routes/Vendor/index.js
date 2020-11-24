@@ -7,6 +7,8 @@ const getNearbyVendor = require("./getNearbyVendor");
 const getMostRatedVendor = require("./getMostRatedVendor");
 const getVendorDistance = require("./getVendorDistance");
 
+const getDashboardInfo = require("./getDashboardInfo");
+const getCurrentBooking = require("./getCurrentBooking");
 const getAvailableField = require("./getAvailableField");
 const getAvailableGame = require("./getAvailableGame");
 
@@ -36,7 +38,8 @@ const {
   requireLogin,
   verifyAdminVendor,
   verifyUser,
-  verifyAdminUser
+  verifyAdminUser,
+  verifyVendor
 } = require("../../config/passport");
 
 router.get("/search", requireLogin, searchVendor);
@@ -45,6 +48,8 @@ router.get("/nearby", requireLogin, getNearbyVendor);
 router.get("/most-rated", requireLogin, getMostRatedVendor);
 router.get("/:vendorId/distance", requireLogin, getVendorDistance);
 
+router.get("/dashboard-info", requireLogin, verifyVendor, getDashboardInfo);
+router.get("/current-booking", requireLogin, verifyVendor, getCurrentBooking);
 router.get("/:vendorId/available-field", requireLogin, getAvailableField);
 router.get("/:vendorId/available-game", requireLogin, getAvailableGame);
 

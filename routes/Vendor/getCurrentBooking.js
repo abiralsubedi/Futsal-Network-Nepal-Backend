@@ -1,19 +1,16 @@
 const Booking = require("../../models/Booking");
-var mongoose = require("mongoose");
-const { ObjectId } = mongoose.Types;
 
 module.exports = async (req, res) => {
   try {
-    const { vendorId } = req.params;
-    const { startDate, endDate } = req.query;
-    const pageSize = +req.query.pageSize;
-    const currentPage = +req.query.currentPage;
+    const { presentDate } = req.query;
+    const { _id: vendorId } = req.user;
 
-    const items = await Booking.aggregate([
+    const booking = await Booking.aggregate([
       {
         $match: {
-          vendor: ObjectId(vendorId),
-          bookingDate: { $gte: new Date(startDate), $lte: new Date(endDate) }
+          vendor: vendorId,
+          cancelled: false,
+          bookingDate: { $eq: new Date(presentDate) }
         }
       },
       {
@@ -34,16 +31,6 @@ module.exports = async (req, res) => {
         }
       },
       { $unwind: "$workingHour.clock" },
-      {
-        $sort: {
-          bookingDate: 1,
-          "workingHour.clock.clockNo": 1
-        }
-      },
-      { $skip: pageSize * currentPage - pageSize },
-      {
-        $limit: pageSize
-      },
       {
         $lookup: {
           from: "users",
@@ -78,15 +65,15 @@ module.exports = async (req, res) => {
           "user.hash": 0,
           "user.salt": 0
         }
+      },
+      {
+        $sort: {
+          "workingHour.clock.clockNo": 1
+        }
       }
     ]);
 
-    const searchCount = await Booking.countDocuments({
-      vendor: vendorId,
-      bookingDate: { $gte: startDate, $lte: endDate }
-    });
-
-    res.json({ searchCount, items });
+    res.json(booking);
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
