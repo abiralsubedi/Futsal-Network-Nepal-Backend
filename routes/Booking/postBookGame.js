@@ -3,10 +3,21 @@ const WorkingHour = require("../../models/WorkingHour");
 const CreditHistory = require("../../models/CreditHistory");
 const User = require("../../models/User");
 
+const plainInfoTemplate = require("../../templates/plainInfo");
+const sendEmail = require("../../Helper/Common/sendEmail");
+
 module.exports = async (req, res) => {
   try {
-    const { _id: userId } = req.user;
-    const { bookingDate, fieldId, gameHourId, vendorId } = req.body;
+    const { _id: userId, emailAddress, fullName } = req.user;
+    const {
+      vendorName,
+      fullBookingTime,
+      fullBookingDate,
+      bookingDate,
+      fieldId,
+      gameHourId,
+      vendorId
+    } = req.body;
 
     const selectedGame = await WorkingHour.findOne({ _id: gameHourId });
 
@@ -37,13 +48,19 @@ module.exports = async (req, res) => {
 
     await newCreditTransaction.save();
 
+    const htmlContent = plainInfoTemplate({
+      fullName,
+      plainText: `Your booking has been confirmed at ${vendorName} on ${fullBookingDate} ${fullBookingTime}. $${selectedGame.price} has been deducted from your account.`
+    });
+
+    await sendEmail({
+      htmlContent,
+      subject: "Booking Confirmation",
+      receiver: emailAddress
+    });
+
     res.json({ amount: -selectedGame.price });
   } catch (error) {
-    const { name, message } = error;
-    if (name === "Error") {
-      res.status(409).json({ message });
-    } else {
-      res.status(409).json({ message: "Booking already exists." });
-    }
+    res.status(409).json({ message: error.message });
   }
 };

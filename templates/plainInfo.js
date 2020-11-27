@@ -1,6 +1,6 @@
-module.exports = ({ fullName, plainText, buttonText, buttonLink }) => {
-  return `
-  <table style='min-width:320px;' width='100%' cellspacing='0' cellpadding='0' bgcolor='#f0f4f7'>
+module.exports = ({fullName, plainText}) => (
+    `
+    <table style='min-width:320px;' width='100%' cellspacing='0' cellpadding='0' bgcolor='#f0f4f7'>
 	<tbody>
 		<tr>
 			<td bgcolor='#F6EFFF' style='background: #2196f338;' valign='top' align='center'>
@@ -29,16 +29,13 @@ module.exports = ({ fullName, plainText, buttonText, buttonLink }) => {
 																<td style='padding-bottom:30px;' class='open-sans'>Hi ${fullName},</td>
 															</tr>
 															<tr>
-																<td style='padding-bottom:42px;'>${plainText}</td>
-															</tr>
-															<tr>
-																<td style='padding-bottom:18px;'>
-																	<a href='${buttonLink}' target='_blank' style='font-size: 18px; font-weight: 600; color:white; text-decoration: none; padding: 12px 32px; height: 48px; width: 224px; border-radius: 24px; background: #2196f3'>${buttonText}</a>
-																</td>
+																<td>${plainText}</td>
 															</tr>
 															<tr>
 																<td style='padding:30px 0;'>Happy Playing,
+																	
 																	<br>Abiral
+																	
 																	</td>
 																</tr>
 																<tr>
@@ -47,9 +44,11 @@ module.exports = ({ fullName, plainText, buttonText, buttonLink }) => {
 																			<tbody>
 																				<tr>
 																					<td>We provide you the most suitable futsal on demand 24x7.
+																						
 																						<br>
 																						</td>
 																						<td>The email expires in 7 days.
+																							
 																							<br>
 																							</td>
 																						</tr>
@@ -71,5 +70,5 @@ module.exports = ({ fullName, plainText, buttonText, buttonLink }) => {
 						</tr>
 					</tbody>
 				</table>
-`;
-};
+    `
+)

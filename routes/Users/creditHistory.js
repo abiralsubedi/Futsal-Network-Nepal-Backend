@@ -11,7 +11,9 @@ module.exports = async (req, res) => {
         transactionDate: { $gte: startDate, $lt: endDate }
       },
       { __v: 0 }
-    ).populate({ path: "user", select: "-hash -salt" });
+    )
+      .sort({ transactionDate: 1 })
+      .populate({ path: "user", select: "-hash -salt" });
 
     res.json(creditHistories);
   } catch (error) {
