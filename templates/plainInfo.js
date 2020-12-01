@@ -47,10 +47,6 @@ module.exports = ({fullName, plainText}) => (
 																						
 																						<br>
 																						</td>
-																						<td>The email expires in 7 days.
-																							
-																							<br>
-																							</td>
 																						</tr>
 																					</tbody>
 																				</table>
