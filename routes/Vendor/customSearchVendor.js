@@ -12,43 +12,49 @@ module.exports = async (req, res) => {
     const maxRate = +req.query.maxRate;
 
     const boundaryDegree = 0.009009 * radius;
-    const minLat = lat - boundaryDegree;
-    const maxLat = lat + boundaryDegree;
+    let minLat = -90,
+      maxLat = 90,
+      minLng = -180,
+      maxLng = 180;
+    if (radius && lat) {
+      minLat = lat - boundaryDegree;
+      maxLat = lat + boundaryDegree;
 
-    const minLng = lng - boundaryDegree;
-    const maxLng = lng + boundaryDegree;
+      minLng = lng - boundaryDegree;
+      maxLng = lng + boundaryDegree;
+    }
 
     const searchRegex = { $regex: vendorName, $options: "i" };
 
-    let vendors;
-    if (radius && lat) {
-      vendors = await User.find({
-        role: "Vendor",
-        "location.coordinates.lat": { $gt: minLat, $lt: maxLat },
-        "location.coordinates.lng": { $gt: minLng, $lt: maxLng },
-        fullName: searchRegex
-      });
-    } else {
-      vendors = await User.find({ role: "Vendor", fullName: searchRegex });
-    }
-
-    const vendorListId = vendors.map(item => item._id);
-
-    const customVendor = await Review.aggregate([
-      {
-        $group: {
-          _id: "$vendor",
-          rating: { $avg: "$rating" },
-          totalReview: { $sum: 1 }
-        }
-      },
+    let customVendors = await User.aggregate([
       {
         $match: {
-          _id: { $in: vendorListId }
+          role: "Vendor",
+          fullName: searchRegex,
+          "location.coordinates.lat": { $gt: minLat, $lt: maxLat },
+          "location.coordinates.lng": { $gt: minLng, $lt: maxLng }
         }
       },
       {
-        $match: { rating: { $gte: minRate, $lte: maxRate } }
+        $lookup: {
+          from: "reviews",
+          localField: "_id",
+          foreignField: "vendor",
+          as: "review"
+        }
+      },
+      {
+        $unwind: {
+          path: "$review",
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $group: {
+          _id: "$_id",
+          rating: { $avg: "$review.rating" },
+          totalReview: { $sum: 1 }
+        }
       },
       {
         $lookup: {
@@ -60,11 +66,22 @@ module.exports = async (req, res) => {
       },
       { $unwind: "$vendor" },
       {
-        $sort: { rating: -1, totalReview: -1, fullName: 1 }
+        $sort: { rating: -1, totalReview: -1, "vendor.fullName": 1 }
       }
     ]);
 
-    res.json(customVendor);
+    customVendors = customVendors.map(item => {
+      if (item.rating === null) {
+        return { ...item, rating: 0, totalReview: 0 };
+      }
+      return item;
+    });
+
+    customVendors = customVendors.filter(
+      item => item.rating >= minRate && item.rating <= maxRate
+    );
+
+    res.json(customVendors);
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
