@@ -45,7 +45,7 @@ module.exports = async (req, res) => {
       todayBooking,
       fieldCount,
       availableBooking,
-      totalBooking: booking[0].total
+      totalBooking: booking.length ? booking[0].total : 0
     });
   } catch (error) {
     res.status(409).json({ message: error.message });
